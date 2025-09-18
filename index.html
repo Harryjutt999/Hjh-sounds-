@@ -5,68 +5,66 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Funny Surprise</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Inter, system-ui, Arial, sans-serif;
-      background: linear-gradient(180deg,#071032 0%, #0b1220 100%);
-      color: #e6eef8;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    .card {
-      background: rgba(255,255,255,0.05);
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-      text-align: center;
-      max-width: 480px;
-      width: 90%;
-    }
-    h1 { margin: 0 0 12px; font-size: 22px; }
-    p { margin: 0 0 18px; color: #bcd1ff; }
-    .btn {
-      background: #f59e0b;
-      color: #071032;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 16px;
-      box-shadow: 0 6px 18px rgba(245,158,11,0.25);
-    }
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#f59e0b}
+    body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#071032 0%, #0b1220 100%);color:#e6eef8;display:flex;align-items:center;justify-content:center;height:100vh}
+    .card{background:rgba(255,255,255,0.03);padding:28px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);max-width:480px;width:90%;text-align:center}
+    h1{margin:0 0 8px;font-size:20px}
+    p{margin:0 0 18px;color:#bcd1ff}
+    .btn{background:var(--accent);color:#071032;padding:12px 18px;border:none;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.18)}
+    .small{font-size:13px;color:#9fb0e6;margin-top:12px}
+    #overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,23,0.6);backdrop-filter:blur(3px)}
+    #playNow{padding:16px 20px;border-radius:14px;font-size:18px}
+    footer{margin-top:12px;font-size:12px;color:#9fb0e6}
   </style>
 </head>
 <body>
-  <div class="card" id="card">
+  <div class="card">
     <h1>Surprise!</h1>
-    <p>Click below to see what happens 👇</p>
+    <p>🤣</p>
 
     <audio id="prank-audio" preload="auto">
+      <!-- Replace filename with your hosted non-explicit audio file -->
       <source src="https://www.dropbox.com/scl/fi/7i1pnmpkwiaomlqr1wzjj/59500636_sexy-girl-orgasm-moans_by_racoonvibes_preview.mp3?rlkey=j76dra37gj9ilht5vqqw03wt1&st=7svw9nru&dl=1" type="audio/mpeg">
+      Your browser does not support audio.
     </audio>
 
-    <button id="playNow" class="btn">Tap to Reveal 🎁</button>
+    <div id="overlay" style="display:none">
+      <button id="playNow" class="btn">Tap to play the surprise ▶</button>
+    </div>
+
+    <button id="invisibleBtn" class="btn" style="display:none">Play</button>
+
+    <div class="small"> <code></code></div>
+    <footer></footer>
   </div>
 
   <script>
     const audio = document.getElementById('prank-audio');
+    const overlay = document.getElementById('overlay');
     const playNow = document.getElementById('playNow');
-    const card = document.getElementById('card');
 
-    playNow.addEventListener('click', () => {
-      // play sound immediately
-      audio.currentTime = 0;
-      audio.play().catch(err => console.log("Play failed:", err));
-
-      // replace content instantly
-      card.innerHTML = `
-        <h1 style="font-size:26px;">🎉 Surprise! 🎉</h1>
-        <p style="color:#bcd1ff;">Hope you enjoyed the prank 😉</p>
-      `;
+    // Try to autoplay on load
+    window.addEventListener('load', async () => {
+      try {
+        await audio.play();
+        // if it plays, do nothing (sound started)
+      } catch (err) {
+        // autoplay blocked — show overlay asking for a tap
+        overlay.style.display = 'flex';
+      }
     });
+
+    // If user taps overlay, play sound once
+    playNow.addEventListener('click', () => {
+      audio.currentTime = 0;
+      audio.play().catch(() => {});
+      overlay.style.display = 'none';
+      // optional: after playing, redirect or show message
+      // setTimeout(() => window.location.href = "https://example.com", 1500);
+    });
+
+    // Optional: make clicking anywhere also play (if you want)
+    // document.body.addEventListener('click', () => audio.play().catch(()=>{}), {once:true});
   </script>
 </body>
 </html>
